@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Report {
+  id              Int                   @id @default(autoincrement()) @unique
+  date            String                @db.VarChar(50)
+  open            Float                 @db.Double
+  high            Float                 @db.Double
+  low             Float                 @db.Double
+  close           Float                 @db.Double
+  volume          Float                 @db.Double
+  status          EReportStatus
+  createdAt       DateTime              @default(dbgenerated()) @db.Timestamp
+  updatedAt       DateTime?             @db.Timestamp
+}
+
+model StockPolicy {
+  id              Int                   @id @default(autoincrement()) @unique
+  excellent       Int                   @db.Int
+  good            Int                   @db.Int
+  critical        Int                   @db.Int
+  createdAt       DateTime              @default(dbgenerated()) @db.Timestamp
+  updatedAt       DateTime?             @db.Timestamp
+}
+
+enum EReportStatus {
+  CRITICAL
+  EXCELLENT
+  GOOD
+}
