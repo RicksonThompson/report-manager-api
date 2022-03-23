@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put } from "@nestjs/common"
-import { CreateReportDTO } from "../dtos/report/createReport.dto"
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, UploadedFile, UseInterceptors } from "@nestjs/common"
+import { FileInterceptor } from "@nestjs/platform-express"
+import FileReportDTO from "../repositories/reportRepository /fileReport.dto"
 import { UpdateReportDTO } from "../dtos/report/updateReport.dto"
 import Report from "../entities/report.entity"
 import ReportService from "../services/report.service"
+import { Page, PageResponse } from "src/utils/page.model"
 
 @Controller('/api/reports')
 export default class ReportController {
@@ -11,9 +13,10 @@ export default class ReportController {
   ) {}
 
   @Post()
+  @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HttpStatus.OK)
-  async create(@Body() payload: CreateReportDTO): Promise<Report> {
-    return await this.reportService.create(payload)
+  async create(@UploadedFile('file') file: any): Promise<any> {
+    return await this.reportService.create(file)
   }
 
   @Delete('/:id')
@@ -24,8 +27,8 @@ export default class ReportController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getMany(): Promise<Report[]> {
-    return await this.reportService.findMany()
+  async getMany(@Query() page: Page): Promise<PageResponse<Report>> {
+    return await this.reportService.findMany(page)
   }
 
   @Get('/:id')

@@ -2,12 +2,14 @@ import { PrismaService } from "../../configs/prisma.service"
 import { Injectable } from "@nestjs/common"
 import Report from "../../entities/report.entity"
 import IReportRepository from "./report.repository.contract"
+import { Page, PageResponse } from "src/utils/page.model"
+import { Pageable } from "src/services/pageable.service"
 
 @Injectable()
-export default class ReportRepository implements IReportRepository {
+export default class ReportRepository extends Pageable<Report> implements IReportRepository {
     constructor(
         private readonly repository: PrismaService
-    ) {}
+    ) { super() }
 
     async create(create: Report): Promise<Report> {
         return await this.repository.report.create({
@@ -18,7 +20,6 @@ export default class ReportRepository implements IReportRepository {
                 low: create.low,
                 open: create.open,
                 volume: create.volume,
-                status: create.status,
                 createdAt: create.createdAt
             }
         })
@@ -28,8 +29,15 @@ export default class ReportRepository implements IReportRepository {
         return this.repository.report.delete({ where: { id } })
     }
 
-    findMany(): Promise<Report[]> {
-        return this.repository.report.findMany()
+    async findMany(page: Page): Promise<PageResponse<Report>> {
+        const items = await this.repository.report.findMany({
+            ...this.buildPage(page),
+            orderBy: { id: 'asc' }
+        })
+
+        const total = items.length
+
+        return this.buildPageResponse(items, total)
     }
 
     findOne(id: number): Promise<undefined | Report> {
@@ -45,7 +53,6 @@ export default class ReportRepository implements IReportRepository {
                 low: update.low,
                 open: update.open,
                 volume: update.volume,
-                status: update.status,
                 updatedAt: new Date()
             },
         })
