@@ -1,3 +1,5 @@
+import { EReportStatus } from "@prisma/client"
+
 export default class Report {
   id: number
   date: string
@@ -6,6 +8,7 @@ export default class Report {
   low: number
   close: number
   volume: number
+  status?: EReportStatus
   createdAt: Date
   updatedAt?: Date
 

@@ -22,15 +22,15 @@ export default class StockPolicyController {
     return await this.stockPolicyService.delete(parseInt(id))
   }
 
-  @Get('/:id')
+  @Get()
   @HttpCode(HttpStatus.OK)
-  async getOne(@Param('id') id: string): Promise<StockPolicy> {
-    return await this.stockPolicyService.findOne(parseInt(id))
+  async getOne(): Promise<StockPolicy> {
+    return await this.stockPolicyService.findOne()
   }
 
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() payload: UpdateReportDTO): Promise<StockPolicy> {
+  async update(@Body() payload: UpdateReportDTO, @Param('id') id: string): Promise<StockPolicy> {
     return await this.stockPolicyService.update(payload, parseInt(id))
   }
 }

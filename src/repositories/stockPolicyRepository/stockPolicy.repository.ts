@@ -24,8 +24,8 @@ export default class StockPolicyRepository implements IStockPolicyRepository {
         return this.repository.stockPolicy.delete({ where: { id } })
     }
 
-    findOne(id: number): Promise<undefined | StockPolicy> {
-        return this.repository.stockPolicy.findUnique({ where: { id: id } })
+    findOne(): Promise<undefined | StockPolicy> {
+        return this.repository.stockPolicy.findFirst()
     }
 
     update(update: StockPolicy): Promise<StockPolicy> {

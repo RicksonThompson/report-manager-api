@@ -15,7 +15,7 @@ export default class ReportController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HttpStatus.OK)
-  async create(@UploadedFile('file') file: any): Promise<any> {
+  async create(@UploadedFile('file') file: any): Promise<Report[]> {
     return await this.reportService.create(file)
   }
 

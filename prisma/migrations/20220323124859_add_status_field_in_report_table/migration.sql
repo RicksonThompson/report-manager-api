@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Report` ADD COLUMN `status` ENUM('CRITICAL', 'EXCELLENT', 'GOOD') NULL;

@@ -20,6 +20,7 @@ export default class ReportRepository extends Pageable<Report> implements IRepor
                 low: create.low,
                 open: create.open,
                 volume: create.volume,
+                status: create?.status,
                 createdAt: create.createdAt
             }
         })
@@ -40,6 +41,10 @@ export default class ReportRepository extends Pageable<Report> implements IRepor
         return this.buildPageResponse(items, total)
     }
 
+    async findManyWithoutPagination(): Promise<Report[]> {
+        return await this.repository.report.findMany()
+    }
+
     findOne(id: number): Promise<undefined | Report> {
         return this.repository.report.findUnique({ where: { id } })
     }
@@ -53,6 +58,7 @@ export default class ReportRepository extends Pageable<Report> implements IRepor
                 low: update.low,
                 open: update.open,
                 volume: update.volume,
+                status: update?.status,
                 updatedAt: new Date()
             },
         })

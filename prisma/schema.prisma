@@ -15,6 +15,7 @@ model Report {
   low             Float                 @db.Double
   close           Float                 @db.Double
   volume          Float                 @db.Double
+  status          EReportStatus?
   createdAt       DateTime              @default(now())
   updatedAt       DateTime?             @updatedAt
 }

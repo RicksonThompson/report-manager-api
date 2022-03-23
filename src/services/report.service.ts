@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common"
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common"
 import { UpdateReportDTO } from "../dtos/report/updateReport.dto"
 import { CreateReportDTO } from "../dtos/report/createReport.dto"
 import Report from "../entities/report.entity"
@@ -6,17 +6,20 @@ import IReportRepository from "../repositories/reportRepository /report.reposito
 import { EReportStatus } from "../utils/ETypes"
 import * as stream from "stream"
 import * as readline from "readline"
-import FileReportDTO from "src/repositories/reportRepository /fileReport.dto"
-import { Page, PageResponse } from "src/utils/page.model"
+import FileReportDTO from "../repositories/reportRepository /fileReport.dto"
+import { Page, PageResponse } from "../utils/page.model"
+import StockPolicyService from "./stockPolicy.service"
 
 @Injectable()
 export default class ReportService {
     constructor(
         @Inject('IReportRepository')
-        private readonly reportRepository: IReportRepository
+        private readonly reportRepository: IReportRepository,
+        @Inject(forwardRef(() => StockPolicyService))
+        private readonly stockPolicyService: StockPolicyService
     ) {}
 
-    async create(reportProps: FileReportDTO): Promise<any> {
+    async create(reportProps: FileReportDTO): Promise<Report[]> {
         const reports: Report[] = []
 
         const readableFile = new stream.Readable()
@@ -43,6 +46,14 @@ export default class ReportService {
 
         reports.shift()
 
+        const stockPolicy = await this.stockPolicyService.find()
+
+        if (stockPolicy) {
+            const reportWithStatus = await this.stockPolicyService.verifyStatus(reports, stockPolicy)
+
+            return await Promise.all(reportWithStatus.map(async report => await this.reportRepository.create(report)))
+        }
+        
         return await Promise.all(reports.map(async report => await this.reportRepository.create(report)))
     }
 
@@ -52,6 +63,10 @@ export default class ReportService {
 
     async findMany(page: Page): Promise<PageResponse<Report>> {
         return await this.reportRepository.findMany(page)
+    }
+
+    async findManyWithoutPagination(): Promise<Report[]> {
+        return await this.reportRepository.findManyWithoutPagination()
     }
 
     async findOne(id: number): Promise<Report> {
@@ -70,5 +85,9 @@ export default class ReportService {
         Object.assign(report, data)
 
         return await this.reportRepository.update(report)
+    }
+
+    async updateStatus(reports: Report[]): Promise<Report[]> {
+        return await Promise.all(reports.map(async report => this.reportRepository.update(report)))
     }
 }
