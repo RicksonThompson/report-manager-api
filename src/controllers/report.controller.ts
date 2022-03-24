@@ -4,7 +4,7 @@ import FileReportDTO from "../repositories/reportRepository /fileReport.dto"
 import { UpdateReportDTO } from "../dtos/report/updateReport.dto"
 import Report from "../entities/report.entity"
 import ReportService from "../services/report.service"
-import { Page, PageResponse } from "src/utils/page.model"
+import { Page, PageResponse } from "../utils/page.model"
 
 @Controller('/api/reports')
 export default class ReportController {

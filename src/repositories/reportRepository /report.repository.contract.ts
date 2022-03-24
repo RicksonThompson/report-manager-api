@@ -1,4 +1,4 @@
-import { Page, PageResponse } from "src/utils/page.model"
+import { Page, PageResponse } from "../../utils/page.model"
 import Report from "../../entities/report.entity"
 
 export default interface IReportRepository {

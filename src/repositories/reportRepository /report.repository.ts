@@ -2,8 +2,8 @@ import { PrismaService } from "../../configs/prisma.service"
 import { Injectable } from "@nestjs/common"
 import Report from "../../entities/report.entity"
 import IReportRepository from "./report.repository.contract"
-import { Page, PageResponse } from "src/utils/page.model"
-import { Pageable } from "src/services/pageable.service"
+import { Page, PageResponse } from "../../utils/page.model"
+import { Pageable } from "../../services/pageable.service"
 
 @Injectable()
 export default class ReportRepository extends Pageable<Report> implements IReportRepository {
