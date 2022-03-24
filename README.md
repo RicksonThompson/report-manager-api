@@ -1,73 +1,127 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Report Manager API
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+API Rest para gerenciamento de relatórios.
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
 
-```bash
-$ npm install
-```
-
-## Running the app
+Entre na pasta do projeto e instale as dependências
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+  cd my-project
+  npm install
 ```
+Para realizar a conexão com o banco de dados, crie um arquivo `.env`
 
-## Test
+`DATABASE_URL="mysql://root:admin@localhost:3306/report-manager-api"`
+
+O banco de dados roda em um container do docker, então execute
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+  docker run --name report-manager-api -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=report-manager-api -e MYSQL_USER=admin -e MYSQL_PASSWORD=admin mysql:latest 
 ```
 
-## Support
+    
+## API Reference
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+#### 1. Stock Policy Service
 
-## Stay in touch
+#### Create
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```http
+  POST /api/stockPolicies
+```
 
-## License
+| Parameter  | Type     | Description     | Localization
+| :--------  | :------- | :---------------| :-----------
+| `critical` | `number` | **Required**.  | Body
+| `good`     | `number` | **Required**.      | Body
+| `excellent` | `number` | **Required**. | Body
 
-Nest is [MIT licensed](LICENSE).
+#### Get One
+
+```http
+  GET /api/stockPolicies
+```
+
+#### Update
+
+```http
+  PUT /api/stockPolicies/${id}
+```
+
+| Parameter | Type     | Description     | Localization
+| :-------- | :------- | :---------------| :-----------
+| `critical` | `number` | **Optional**.  |  Body       |
+| `good` | `number` | **Optional**.      |  Body       |
+| `excellent` | `number` | **Optional**. |  Body       |
+| `id`        |  `string` | **Required** |  Param      |
+
+#### Delete
+
+```http
+  DELETE /api/stockPolicies/${id}
+```
+| Parameter | Type     | Description     | Localization
+| :-------- | :------- | :---------------| :-----------
+| `id`        |  `string` | **Required** |  Param      |
+
+#### 2. Reports Service
+
+#### Create 
+
+```http
+  POST /api/reports
+```
+
+| Parameter | Type     | Description     | Localization
+| :-------- | :------- | :---------------| :-----------
+| `file` | `file` | **Required**. Extension .csv  | Multipart Form
+
+#### Get One
+
+```http
+  GET /api/reports/${id}
+```
+| Parameter | Type     | Description     | Localization
+| :-------- | :------- | :---------------| :-----------
+| `id`        |  `string` | **Required** |  Param      |
+
+#### Update
+
+```http
+  PUT /api/reports/${id}
+```
+
+| Parameter | Type     | Description     | Localization
+| :-------- | :------- | :---------------| :-----------
+| `date` | `string` | **Optional**.  |  Body       |
+| `open` | `number`     | **Optional**.      |  Body       |
+| `high` | `number` | **Optional**. |  Body       |
+| `low` | `number` | **Optional**.  |  Body       |
+| `close` | `number`     | **Optional**.      |  Body       |
+| `volume` | `number` | **Optional**. |  Body       |
+| `id`        |  `string` | **Required** |  Param      |
+
+#### Delete
+
+```http
+  DELETE /api/reports/${id}
+```
+| Parameter | Type     | Description     | Localization
+| :-------- | :------- | :---------------| :-----------
+| `id`        |  `string` | **Required** |  Param      |
+## Tech Stack
+
+**Client:** React
+
+**Server:** NestJS, NodeJS
+
+
+## Features
+
+- Upload file .csv
+- CRUD reports
+- CRUD stock policies
+
